@@ -71,8 +71,8 @@ public class UserController {
         if (!isLoggedIn) {
             //对密码加密，并把用户信息注册到数据库中
             try {
-                String encodedPassword =userService.register(phone, password, nickName);
-                User user = userService.login(phone, encodedPassword);
+                userService.register(phone, password, nickName);
+                User user = userService.login(phone, password);
                 SignVO signVO = new SignVO(signUtils.createSign(user));
                 return signVO;
             } catch (Exception e) {

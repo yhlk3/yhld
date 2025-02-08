@@ -1,6 +1,7 @@
 com\example\app\controller\FileUploadController.class
 com\example\app\domain\CategoryWithCommodityVO.class
 com\example\app\controller\CommodityController.class
+com\example\app\domain\SignVO.class
 com\example\app\domain\CommodityInfoVO.class
 com\example\app\domain\CommodityWp.class
 com\example\app\domain\CommodityListVO.class

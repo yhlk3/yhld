@@ -33,7 +33,10 @@ public class UserService {
         return userMapper.update(user);
     }
     public User login(String phone, String password) {
-        return userMapper.login(phone, password);
+        String salt =userMapper.findSaltByPhone(phone);
+        PasswordUtils passwordUtils = new PasswordUtils();
+        String encodedPassword = passwordUtils.md5WithSalt(password, salt);
+        return userMapper.login(phone, encodedPassword);
     }
     public User findByPhone(String phone) {
         return userMapper.findByPhone(phone);
@@ -46,7 +49,7 @@ public class UserService {
     public String findSaltByPhone(String phone) {
         return userMapper.findSaltByPhone(phone);
     }
-    public String register(String phone, String password,String nickName){
+    public void register(String phone, String password,String nickName){
         int timestamp = (int) (System.currentTimeMillis() / 1000);
         String salt = UUID.randomUUID().toString();
         User user = new User();
@@ -60,7 +63,6 @@ public class UserService {
         user.setUpdateTime(timestamp);
         user.setIsDeleted(0);
         userMapper.insert(user);
-        return encodedPassword;
     }
 
 }
