@@ -4,7 +4,6 @@ import com.example.module.utils.SignUtils;
 import com.example.app.domain.SignVO;
 import com.example.module.entity.User;
 import com.example.module.service.UserService;
-import com.example.module.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,10 +28,7 @@ public class UserController {
     @RequestMapping("/user/login")
     public SignVO login( @RequestParam("phone") String phone,
                          @RequestParam("password") String password) {
-        String salt = userService.findSaltByPhone(phone);
-        PasswordUtils passwordUtils = new PasswordUtils();
-        String encodedPassword = passwordUtils.md5WithSalt(password, salt);
-        User user = userService.login(phone, encodedPassword);
+        User user = userService.login(phone, password);
         if (user == null) {
             return null;
         }

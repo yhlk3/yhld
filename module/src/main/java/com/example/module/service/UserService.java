@@ -46,9 +46,6 @@ public class UserService {
         return phonePattern.matcher(phone).matches();
     }
 
-    public String findSaltByPhone(String phone) {
-        return userMapper.findSaltByPhone(phone);
-    }
     public void register(String phone, String password,String nickName){
         int timestamp = (int) (System.currentTimeMillis() / 1000);
         String salt = UUID.randomUUID().toString();

@@ -30,10 +30,8 @@ public class UserController {
     @RequestMapping("/user/login")
     public SignVO login( @RequestParam("phone") String phone,
                          @RequestParam("password") String password) {
-        String salt =userService.findSaltByPhone(phone);
-        PasswordUtils passwordUtils = new PasswordUtils();
-        String encodedPassword = passwordUtils.md5WithSalt(password,salt);
-        User user = userService.login(phone, encodedPassword);
+
+        User user = userService.login(phone,password);
         if (user == null) {
             return null;
         }
