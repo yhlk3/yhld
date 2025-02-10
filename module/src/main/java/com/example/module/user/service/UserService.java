@@ -47,6 +47,10 @@ public class UserService {
     }
 
     public void register(String phone, String password,String nickName){
+        //验证手机号是否被注册过，如果注册过，抛出异常已注册
+        if (userMapper.findByPhone(phone) != null) {
+            throw new RuntimeException("手机号已被注册");
+        }
         int timestamp = (int) (System.currentTimeMillis() / 1000);
         String salt = UUID.randomUUID().toString();
         User user = new User();
