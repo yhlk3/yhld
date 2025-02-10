@@ -3,9 +3,8 @@ package com.example.console.controller;
 import com.alibaba.fastjson.JSON;
 import com.example.console.domain.SignVO;
 import com.example.module.entity.Sign;
-import com.example.module.entity.User;
-import com.example.module.service.UserService;
-import com.example.module.utils.PasswordUtils;
+import com.example.module.user.entity.User;
+import com.example.module.user.service.UserService;
 import com.example.module.utils.SignUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,10 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
-import java.util.UUID;
 
 
 @RestController

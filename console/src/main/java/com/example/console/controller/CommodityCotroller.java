@@ -3,14 +3,13 @@ package com.example.console.controller;
 import com.example.console.domain.CommodityInfoVO;
 import com.example.console.domain.CommodityListResponse;
 import com.example.console.domain.CommodityListVO;
-import com.example.module.entity.Commodity;
-import com.example.module.service.CommodityService;
+import com.example.module.commodity.entity.Commodity;
+import com.example.module.commodity.service.CommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.Date;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;

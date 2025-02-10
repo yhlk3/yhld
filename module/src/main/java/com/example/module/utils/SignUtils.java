@@ -1,9 +1,8 @@
 package com.example.module.utils;
 
+import com.example.module.user.entity.User;
 import com.alibaba.fastjson.JSON;
 import com.example.module.entity.Sign;
-import com.example.module.entity.User;
-import com.example.module.service.UserService;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.stereotype.Service;
 

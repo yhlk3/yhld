@@ -2,10 +2,10 @@ package com.example.app.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.app.domain.*;
-import com.example.module.entity.Commodity;
-import com.example.module.entity.Category;
-import com.example.module.service.CategoryService;
-import com.example.module.service.CommodityService;
+import com.example.module.category.entity.Category;
+import com.example.module.category.service.CategoryService;
+import com.example.module.commodity.entity.Commodity;
+import com.example.module.commodity.service.CommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
