@@ -28,9 +28,6 @@ import java.util.List;
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
-    @Autowired
-    private UserService userService;
-
     @RequestMapping("/commodity/insert")
     public Long insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,
@@ -38,38 +35,16 @@ public class CommodityController {
                                 @RequestParam("location") String location,
                                 @RequestParam("introduction") String introduction,
                                 @RequestParam("images") String images,
-                                @RequestParam("categoryId") Long categoryId,
-                                HttpServletRequest request) {
+                                @RequestParam("categoryId") Long categoryId) {
         title = title.trim();
         location = location.trim();
         introduction = introduction.trim();
-        Cookie[] cookies = request.getCookies();
-        boolean isLoggedIn = true;
-        for (Cookie cookie : cookies) {
-            if ("sign".equals(cookie.getName())) {
-                String encodedSignString = cookie.getValue();
-                byte[] decodedBytes = Base64.decodeBase64(encodedSignString);
-                String jsonSignString = new String(decodedBytes, StandardCharsets.UTF_8);
-                Sign sign = JSON.parseObject(jsonSignString, Sign.class);
-                Long userId = sign.getUserId();
-                if (sign.getExpireTime().before(new Date()) || userService.getById(userId) ==null) {
-                    isLoggedIn = false;
-                } else {
-                    return null;
-                }
-            }
-            else {
-                isLoggedIn = false;
-            }
-        }
-        if (!isLoggedIn) {
-            try {
-                return commodityService.edit(id, title, price, location, introduction,images,categoryId);
+        try {
+            return commodityService.edit(id, title, price, location, introduction,images,categoryId);
             } catch (Exception e) {
-                return null;
-            }
+            return null;
         }
-        return null;
+
     }
     @RequestMapping("/commodity/update")
     public Long updateCommodity(@RequestParam("id") Long id,
