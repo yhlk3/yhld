@@ -53,7 +53,7 @@ public class UserController {
                 String jsonSignString = new String(decodedBytes, StandardCharsets.UTF_8);
                 Sign sign = JSON.parseObject(jsonSignString, Sign.class);
                 Long userId = sign.getUserId();
-                if (sign.getExpireTime().before(new Date()) || userService.findById(userId) ==null || userService.findByPhone(phone) == null) {
+                if (sign.getExpireTime().before(new Date()) || userService.getById(userId) ==null || userService.findByPhone(phone) == null) {
                     isLoggedIn = false;
                 } else {
                     return null;

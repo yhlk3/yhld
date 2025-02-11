@@ -4,11 +4,12 @@ import com.example.module.user.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 @Mapper
 public interface UserMapper {
-    @Select("select * from user where id = #{id}")
-    User findById(@Param("id")Long id);
+    @Select("select * from user where id = #{id} and is_deleted = 0")
+    User getById(@Param("id")Long id);
 
     int insert(@Param("user")User user);
 
@@ -21,5 +22,10 @@ public interface UserMapper {
 
     @Select("select salt from user where phone = #{phone}")
     String findSaltByPhone(@Param("phone")String phone);
+
+    @Update("update user set is_deleted = 1 where id = #{id}")
+    int delete(Long id);
+    @Select("select * from user where id = #{id}")
+    User extractById(Long id);
 
 }

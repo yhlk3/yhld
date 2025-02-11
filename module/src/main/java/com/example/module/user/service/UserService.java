@@ -14,8 +14,11 @@ import java.util.regex.Pattern;
 public class UserService {
     @Autowired
     private UserMapper userMapper;
-    public User findById(Long id) {
-        return userMapper.findById(id);
+    public User getById(Long id) {
+        return userMapper.getById(id);
+    }
+    public User extractById(Long id) {
+        return userMapper.extractById(id);
     }
     public Long insert(String phone, String nickName, String password) {
         int timestamp = (int) (System.currentTimeMillis() / 1000);
@@ -31,6 +34,9 @@ public class UserService {
     }
     public int update(User user) {
         return userMapper.update(user);
+    }
+    public int delete(Long id) {
+        return userMapper.delete(id);
     }
     public User login(String phone, String password) {
         String salt =userMapper.findSaltByPhone(phone);

@@ -44,12 +44,6 @@ public interface CommodityMapper {
     @Update("update commodity set is_deleted = 1 where category_id = #{categoryId}")
     int deleteByCategoryId(Long categoryId);
 
-    List<CommodityCategoryDTO> getCommoditiesWithCategory(@Param("keyword") String keyword,
-                                                          @Param("offset") int offset,
-                                                          @Param("pageSize") int pageSize);
-
-    @Select("SELECT * FROM commodity WHERE category_id = #{categoryId} AND is_deleted=0")
-    List<Commodity> findByCategoryId(@Param("categoryId") Long categoryId);
 
     List<Commodity> findCommoditiesByCategoryIds(@Param("categoryIds") String categoryIds,
                                                  @Param("offset") int offset,

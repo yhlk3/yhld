@@ -1,14 +1,22 @@
 package com.example.console.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.example.console.domain.CommodityInfoVO;
 import com.example.console.domain.CommodityListResponse;
 import com.example.console.domain.CommodityListVO;
 import com.example.module.commodity.entity.Commodity;
 import com.example.module.commodity.service.CommodityService;
+import com.example.module.entity.Sign;
+import com.example.module.user.service.UserService;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -17,9 +25,11 @@ import java.util.List;
 
 @RestController
 
-public class CommodityCotroller {
+public class CommodityController {
     @Autowired
     private CommodityService commodityService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("/commodity/insert")
     public Long insertCommodity(@RequestParam("title") String title,
@@ -28,16 +38,38 @@ public class CommodityCotroller {
                                 @RequestParam("location") String location,
                                 @RequestParam("introduction") String introduction,
                                 @RequestParam("images") String images,
-                                @RequestParam("categoryId") Long categoryId) {
+                                @RequestParam("categoryId") Long categoryId,
+                                HttpServletRequest request) {
         title = title.trim();
         location = location.trim();
         introduction = introduction.trim();
-
-        try {
-            return commodityService.edit(id, title, price, location, introduction,images,categoryId);
-        } catch (Exception e) {
-            return null;
+        Cookie[] cookies = request.getCookies();
+        boolean isLoggedIn = true;
+        for (Cookie cookie : cookies) {
+            if ("sign".equals(cookie.getName())) {
+                String encodedSignString = cookie.getValue();
+                byte[] decodedBytes = Base64.decodeBase64(encodedSignString);
+                String jsonSignString = new String(decodedBytes, StandardCharsets.UTF_8);
+                Sign sign = JSON.parseObject(jsonSignString, Sign.class);
+                Long userId = sign.getUserId();
+                if (sign.getExpireTime().before(new Date()) || userService.getById(userId) ==null) {
+                    isLoggedIn = false;
+                } else {
+                    return null;
+                }
+            }
+            else {
+                isLoggedIn = false;
+            }
         }
+        if (!isLoggedIn) {
+            try {
+                return commodityService.edit(id, title, price, location, introduction,images,categoryId);
+            } catch (Exception e) {
+                return null;
+            }
+        }
+        return null;
     }
     @RequestMapping("/commodity/update")
     public Long updateCommodity(@RequestParam("id") Long id,
@@ -121,7 +153,7 @@ public class CommodityCotroller {
     @RequestMapping(value = "/commodity/extractbyid")
     public Commodity extractCommodityById(@RequestParam Long id) {
         try {
-            return commodityService.extractCommodityById(id);
+            return commodityService.extractById(id);
         } catch (Exception e) {
             return null;
         }

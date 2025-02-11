@@ -20,8 +20,16 @@ public class CategoryService {
     private CommodityMapper commodityMapper;
 
     public Category getById(Long id) {
-        Category category = categoryMapper.getById(id);
-        return category;
+        return categoryMapper.getById(id);
+    }
+    public Category extractById(Long id) {
+        return categoryMapper.extractById(id);
+    }
+    public int insert(Category category) {
+        return categoryMapper.insert(category);
+    }
+    public int update(Category category) {
+        return categoryMapper.update(category);
     }
     public List<Category> getAllCategories(){
         return categoryMapper.findAll();
@@ -31,29 +39,6 @@ public class CategoryService {
     }
     public List<Category> getTopCategories() {
         return categoryMapper.getTopCategories();
-    }
-
-    public Long edit(Long id, String name, String image) {
-        int timestamp = (int) (System.currentTimeMillis() / 1000);
-        Category category = new Category();
-        category.setName(name);
-        category.setImage(image);
-        category.setIsDeleted(0);
-        if (id != null) {
-            Category existingCategory = categoryMapper.getById(id);
-            if (existingCategory == null) {
-                throw new RuntimeException("ID不存在");
-            }
-            category.setId(id);
-            category.setUpdateTime(timestamp);
-            categoryMapper.update(category);
-            return id;
-        } else {
-            category.setCreateTime(timestamp);
-            category.setUpdateTime(timestamp);
-            categoryMapper.insert(category);
-            return category.getId();
-        }
     }
 
     public int delete(Long id) {
@@ -66,13 +51,7 @@ public class CategoryService {
         return categoryMapper.delete(id, timestamp);
     }
 
-    public Category extractCategoryById(Long id) {
-        Category category = categoryMapper.extractById(id);
-        if (category == null) {
-            throw new RuntimeException("商品ID不存在");
-        }
-        return category;
-    }
+
     public List<Category> getCategoriesByIds(String ids) {
         return categoryMapper.getCategoriesByIds(ids);
     }
@@ -101,20 +80,7 @@ public class CategoryService {
         String ids = idsStringBuilder.toString();
         return commodityMapper.findCommoditiesByCategoryIds(ids, (page-1)*pageSize, pageSize);
     }
-    public List<Category> getFinalCategories(Long parentId) {
-        List<Category> leafCategories = new ArrayList<>();
-        List<Category> categories = categoryMapper.getChildByParentId(parentId);
-        for (Category category : categories) {
-            // 判断是否有子分类
-            if (categoryMapper.getChildByParentId(category.getId()).isEmpty()) {
-                leafCategories.add(category);
-            } else {
-                // 递归获取子类目的最后一级类目
-                leafCategories.addAll(getFinalCategories(category.getId()));
-            }
-        }
-        return leafCategories;
-    }
+
 
 
 }

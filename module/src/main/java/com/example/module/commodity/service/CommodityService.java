@@ -15,10 +15,6 @@ public class CommodityService {
     @Autowired
     private CommodityMapper commodityMapper;
 
-    public List<Commodity> getAllCommodities() {
-        return commodityMapper.findAll();
-    }
-
     public Commodity getById(Long id) {
         if (id == null) {
             throw new RuntimeException("商品ID不能为空");
@@ -29,7 +25,6 @@ public class CommodityService {
         }
         return commodity;
     }
-
 
     public Long edit(Long id, String title, Integer price, String location, String introduction, String images,Long categoryId) {
         if (title == null || title.isEmpty()) {
@@ -112,7 +107,7 @@ public class CommodityService {
         return commodityMapper.findByKeywordAndPage(keyword, offset, pageSize, ids);
     }
 
-    public Commodity extractCommodityById(Long id) {
+    public Commodity extractById(Long id) {
         if (id == null) {
             throw new RuntimeException("商品ID不能为空");
         }
@@ -127,10 +122,6 @@ public class CommodityService {
             throw new RuntimeException("分类ID不能为空");
         }
         return commodityMapper.deleteByCategoryId(categoryId);
-    }
-    public List<CommodityCategoryDTO> getCommoditiesWithCategoryByKeywordAndPage(String keyword, int page, int pageSize) {
-
-        return commodityMapper.getCommoditiesWithCategory(keyword, (page - 1)*pageSize, pageSize);
     }
 
     public static double calculateAspectRatioFromRegex(String imageUrl) {
@@ -153,12 +144,6 @@ public class CommodityService {
         } else {
             return 1.0; // 默认值
         }
-    }
-    public List<Commodity> getCommoditiesByCategoryId(Long categoryId) {
-        if (categoryId == null) {
-            throw new RuntimeException("分类ID不能为空");
-        }
-        return commodityMapper.findByCategoryId(categoryId);
     }
 
 }
