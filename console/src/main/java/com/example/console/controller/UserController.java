@@ -4,10 +4,14 @@ import com.example.console.domain.SignVO;
 import com.example.module.user.entity.User;
 import com.example.module.user.service.UserService;
 import com.example.module.utils.SignUtils;
+import javax.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+
+import javax.servlet.http.HttpServletResponse;
 
 
 @RestController
@@ -18,19 +22,24 @@ public class UserController {
     private SignUtils signUtils;
 
     @RequestMapping("/user/login")
-    public SignVO login( @RequestParam("phone") String phone,
-                         @RequestParam("password") String password) {
+    public String login( @RequestParam("phone") String phone,
+                         @RequestParam("password") String password,
+                         HttpServletResponse response) {
         User user = userService.login(phone,password);
         if (user == null) {
-            return null;
+            return "用户不存在";
         }
         SignVO signVO = new SignVO(signUtils.createSign(user));
-        return signVO;
+        Cookie cookie = new Cookie("sign", signVO.getSign());
+        cookie.setMaxAge(3600);
+        response.addCookie(cookie);
+        return "登陆成功";
     }
     @RequestMapping("/user/register")
-    public SignVO register(@RequestParam("phone") String phone,
+    public String register(@RequestParam("phone") String phone,
                            @RequestParam("password") String password,
-                           @RequestParam("nickName") String nickName) {
+                           @RequestParam("nickName") String nickName,
+                           HttpServletResponse response) {
         // 校验手机号是否为13位
         if(!userService.isValidPhone(phone))
             return null;
@@ -38,9 +47,12 @@ public class UserController {
             userService.register(phone, password, nickName);
             User user = userService.login(phone, password);
             SignVO signVO = new SignVO(signUtils.createSign(user));
-            return signVO;
+            Cookie cookie = new Cookie("sign", signVO.getSign());
+            cookie.setMaxAge(3600);
+            response.addCookie(cookie);
+            return "注册成功";
         } catch (Exception e) {
-            return null;
+            return "注册失败";
         }
     }
 }

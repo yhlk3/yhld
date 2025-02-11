@@ -22,8 +22,7 @@ public class UserController {
     @RequestMapping("/user/register")
     public SignVO register(@RequestParam("phone") String phone,
                            @RequestParam("password") String password,
-                           @RequestParam("nickName") String nickName,
-                           @RequestParam(value = "sign", required = false) String sign) {
+                           @RequestParam("nickName") String nickName) {
         // 校验手机号是否为13位
         if(!userService.isValidPhone(phone))
             return null;
