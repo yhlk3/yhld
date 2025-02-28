@@ -2,6 +2,9 @@ package com.example.app.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.app.domain.*;
+import com.example.module.details.entity.CommodityDetails;
+import com.example.module.details.service.CommodityDetailsService;
+import com.example.module.utils.Response;
 import com.example.module.category.entity.Category;
 import com.example.module.category.service.CategoryService;
 import com.example.module.commodity.entity.Commodity;
@@ -23,9 +26,11 @@ public class CommodityController {
     private CommodityService commodityService;
     @Autowired
     private CategoryService categoryService;
+    @Autowired
+    private CommodityDetailsService commodityDetailsService;
 
     @RequestMapping("/commodity/search")
-    public CommodityListResponse search(@RequestParam(value = "keyword", required = false) String keyword,
+    public Response search(@RequestParam(value = "keyword", required = false) String keyword,
                                         @RequestParam(value = "wp", required = false) String encodedWpString) {
         int pageSize = 5;
         CommodityWp wp = null;
@@ -85,16 +90,18 @@ public class CommodityController {
         String jsonWpString = JSON.toJSONString(wp);
         String encodedWpStringResponse = Base64.encodeBase64URLSafeString(jsonWpString.getBytes(StandardCharsets.UTF_8));
         response.setWp(encodedWpStringResponse);
-        return response;
+        Response result = new Response(1001, response);
+        return result;
     }
     @RequestMapping("/commodity/list")
-    public CommodityListResponse list(@RequestParam("page") int page) {
+    public Response list(@RequestParam("page") int page) {
         int pageSize = 5;
         List<Commodity> commodities;
         try {
             commodities = commodityService.getCommoditiesByPage(page, pageSize);
         } catch (Exception e) {
-            return null;
+            Response result = new Response(3053, null);
+            return result;
         }
         List<CommodityListVO> voList = new ArrayList<>();
         for (Commodity commodity : commodities) {
@@ -121,23 +128,36 @@ public class CommodityController {
         CommodityListResponse response = new CommodityListResponse();
         response.setList(voList);
         response.setIsEnd(isEnd);
-        return response;
+        Response result = new Response(1001, response);
+        return result;
     }
 
     @RequestMapping("/commodity/info")
-    public CommodityInfoVO info(@RequestParam Long id) {
+    public Response info(@RequestParam Long id) {
         Commodity commodity =  commodityService.getById(id);
         if (commodity == null ) {
-            return null;
+            Response result = new Response(3054, null);
+            return result;
+        }
+        List<CommodityDetails> commodityDetails = commodityDetailsService.getByCommodityId(id);
+        List<CommodityDetailsVO> commodityDetailsVOList = new ArrayList<>();
+        for (CommodityDetails details : commodityDetails) {
+            //使用get set方法
+            CommodityDetailsVO vo = new CommodityDetailsVO();
+            vo.setContentType(details.getContentType());
+            vo.setContentValue(details.getContentValue());
+            vo.setSequence(details.getSequence());
+            commodityDetailsVOList.add(vo);
         }
         Category category = categoryService.getById(commodity.getCategoryId());
         CommodityInfoVO vo = new CommodityInfoVO();
+        vo.setIntroduction(commodityDetailsVOList);
         vo.setPrice(commodity.getPrice());
         vo.setTitle(commodity.getTitle());
-        vo.setIntroduction(commodity.getIntroduction());
         vo.setImages(Arrays.asList(commodity.getImages().split("\\$")));
         vo.setCategory(category.getName());
         vo.setCategoryImage(category.getImage());
-        return vo;
+        Response result = new Response(1001, vo);
+        return result;
     }
 }

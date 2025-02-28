@@ -1,5 +1,6 @@
 package com.example.console.controller;
 
+import com.example.module.utils.Response;
 import com.example.module.category.entity.Category;
 import com.example.console.domain.CategoryTreeNode;
 import com.example.module.category.service.CategoryService;
@@ -23,17 +24,17 @@ public class CategoryController {
     private CommodityService commodityService;
 
     @RequestMapping("/category/delete")
-    public String delete(@RequestParam Long id) {
+    public Response delete(@RequestParam Long id) {
         try {
             categoryService.delete(id);
             commodityService.deleteByCategoryId(id);
         } catch (Exception e) {
-            return "删除失败";
+            return new Response(3057,null);
         }
-        return "删除成功";
+        return new Response(1001,null);
     }
     @RequestMapping("/category/tree")
-    public List<CategoryTreeNode> tree() {
+    public Response tree() {
         List<Category> categories =categoryService.getAllCategories();
         Map<Long, CategoryTreeNode> nodeMap = new HashMap<>();
         List<CategoryTreeNode> rootNodes = new ArrayList<>();
@@ -52,6 +53,6 @@ public class CategoryController {
                 }
             }
         }
-        return rootNodes;
+        return new Response(1001, rootNodes);
     }
 }

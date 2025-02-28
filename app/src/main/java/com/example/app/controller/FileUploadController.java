@@ -1,6 +1,7 @@
 package com.example.app.controller;
 
 import com.aliyun.oss.OSS;
+import com.example.module.utils.Response;
 import java.util.Date;
 import com.aliyun.oss.OSSClientBuilder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +22,7 @@ public class FileUploadController {
     private static final String ALI_DOMAIN = "https://web0-store.oss-cn-beijing.aliyuncs.com/";
 
     @RequestMapping("/upload")
-    public String uploadFiles(@RequestParam("file") MultipartFile file) {
+    public Response uploadFiles(@RequestParam("file") MultipartFile file) {
 
         try {
             // 格式化年月和日
@@ -49,10 +50,10 @@ public class FileUploadController {
             OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
             ossClient.putObject("web0-store", imagePath.substring(1), new ByteArrayInputStream(file.getBytes()));
             ossClient.shutdown();
-            return ALI_DOMAIN + imagePath;
+            return new Response(1001, ALI_DOMAIN + imagePath);
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return new Response(3001, null);
         }
     }
 }

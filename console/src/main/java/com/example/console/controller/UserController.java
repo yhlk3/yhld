@@ -2,6 +2,7 @@ package com.example.console.controller;
 
 import com.example.console.domain.SignVO;
 import com.example.module.user.entity.User;
+import com.example.module.utils.Response;
 import com.example.module.user.service.UserService;
 import com.example.module.utils.SignUtils;
 import javax.servlet.http.Cookie;
@@ -22,37 +23,39 @@ public class UserController {
     private SignUtils signUtils;
 
     @RequestMapping("/user/login")
-    public String login( @RequestParam("phone") String phone,
+    public Response login( @RequestParam("phone") String phone,
                          @RequestParam("password") String password,
                          HttpServletResponse response) {
         User user = userService.login(phone,password);
         if (user == null) {
-            return "用户不存在";
+            return new Response(1014);
         }
         SignVO signVO = new SignVO(signUtils.createSign(user));
         Cookie cookie = new Cookie("sign", signVO.getSign());
         cookie.setMaxAge(3600);
+        cookie.setPath("/");
         response.addCookie(cookie);
-        return "登陆成功";
+        return new Response(1001);
     }
     @RequestMapping("/user/register")
-    public String register(@RequestParam("phone") String phone,
+    public Response register(@RequestParam("phone") String phone,
                            @RequestParam("password") String password,
                            @RequestParam("nickName") String nickName,
                            HttpServletResponse response) {
         // 校验手机号是否为13位
         if(!userService.isValidPhone(phone))
-            return null;
+            return new Response(1013);
         try {
             userService.register(phone, password, nickName);
             User user = userService.login(phone, password);
             SignVO signVO = new SignVO(signUtils.createSign(user));
             Cookie cookie = new Cookie("sign", signVO.getSign());
             cookie.setMaxAge(3600);
+            cookie.setPath("/");
             response.addCookie(cookie);
-            return "注册成功";
+            return new Response(1001);
         } catch (Exception e) {
-            return "注册失败";
+            return new Response(1016);
         }
     }
 }

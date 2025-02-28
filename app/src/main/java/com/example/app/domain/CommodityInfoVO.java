@@ -6,7 +6,7 @@ import java.util.List;
 public class  CommodityInfoVO {
     private Integer price;
     private String title;
-    private String introduction;
+    private List<CommodityDetailsVO> introduction;
     private List<String> images;
     private String category;
     private String categoryImage;

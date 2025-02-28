@@ -1,22 +1,19 @@
 package com.example.console.controller;
 
-import com.alibaba.fastjson.JSON;
+import com.example.console.domain.CommodityDetailsVO;
+import com.example.module.details.entity.CommodityDetails;
+import com.example.module.details.service.CommodityDetailsService;
+import com.example.module.utils.Response;
 import com.example.console.domain.CommodityInfoVO;
 import com.example.console.domain.CommodityListResponse;
 import com.example.console.domain.CommodityListVO;
 import com.example.module.commodity.entity.Commodity;
 import com.example.module.commodity.service.CommodityService;
-import com.example.module.entity.Sign;
-import com.example.module.user.service.UserService;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -28,8 +25,10 @@ import java.util.List;
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
+    @Autowired
+    private CommodityDetailsService commodityDetailsService;
     @RequestMapping("/commodity/insert")
-    public Long insertCommodity(@RequestParam("title") String title,
+    public Response insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,
                                 @RequestParam("price") Integer price,
                                 @RequestParam("location") String location,
@@ -40,14 +39,15 @@ public class CommodityController {
         location = location.trim();
         introduction = introduction.trim();
         try {
-            return commodityService.edit(id, title, price, location, introduction,images,categoryId);
+            commodityService.edit(id, title, price, location, introduction,images,categoryId);
+            return new Response(1001);
             } catch (Exception e) {
-            return null;
+            return new Response(3055,null);
         }
 
     }
     @RequestMapping("/commodity/update")
-    public Long updateCommodity(@RequestParam("id") Long id,
+    public Response updateCommodity(@RequestParam("id") Long id,
                                 @RequestParam("title") String title,
                                 @RequestParam( "price") Integer price,
                                 @RequestParam("location") String location,
@@ -58,29 +58,30 @@ public class CommodityController {
         location = location.trim();
         introduction = introduction.trim();
         try {
-            return commodityService.edit(id, title, price, location, introduction, images, categoryId);
+            commodityService.edit(id, title, price, location, introduction, images, categoryId);
+            return new Response(1001);
 
         } catch (Exception e) {
-            return null;
+            return new Response(3056);
         }
     }
     @RequestMapping("/commodity/delete")
-    public String deleteCommodity(@RequestParam Long id) {
+    public Response deleteCommodity(@RequestParam Long id) {
         try {
-            int result = commodityService.delete(id);
-            return result == 1 ? "成功" : "失败";
+            commodityService.delete(id);
+            return new Response(1001);
         } catch (RuntimeException e) {
-            return e.getMessage();
+            return new Response(3057);
         }
     }
     @RequestMapping("/commodity/list")
-    public CommodityListResponse list(@RequestParam("page") int page) {
+    public Response list(@RequestParam("page") int page) {
         int pageSize = 5;
         List<Commodity> commodities = null;
         try {
             commodities = commodityService.getCommoditiesByPage(page, pageSize);
         } catch (Exception e) {
-            return null;
+            return new Response(3053);
         }
         List<CommodityListVO> voList = new ArrayList<>();
         for (Commodity commodity : commodities) {
@@ -97,20 +98,30 @@ public class CommodityController {
         response.setList(voList);
         response.setTotal(commodityService.getTotalCommodities());
         response.setPageSize(pageSize);
-        return response;
+        return new Response(1001, response);
     }
     @RequestMapping("/commodity/info")
-    public CommodityInfoVO info(@RequestParam Long id) {
+    public Response info(@RequestParam Long id) {
         Commodity commodity = null;
         try {
             commodity = commodityService.getById(id);
         } catch (Exception e) {
-            return null;
+            return new Response(3052);
         }
+
         CommodityInfoVO commodityInfoVO = new CommodityInfoVO();
+        List<CommodityDetails> commodityDetails =commodityDetailsService.getByCommodityId(id);
+        List<CommodityDetailsVO> commodityDetailsVOList = new ArrayList<>();
+        for (CommodityDetails details : commodityDetails) {
+            CommodityDetailsVO vo = new CommodityDetailsVO();
+            vo.setContentType(details.getContentType());
+            vo.setContentValue(details.getContentValue());
+            vo.setSequence(details.getSequence());
+            commodityDetailsVOList.add(vo);
+        }
+        commodityInfoVO.setIntroduction(commodityDetailsVOList);
         commodityInfoVO.setPrice(commodity.getPrice());
         commodityInfoVO.setTitle(commodity.getTitle());
-        commodityInfoVO.setIntroduction(commodity.getIntroduction());
         commodityInfoVO.setImages(Arrays.asList(commodity.getImages().split("\\$")));
         Integer timestamp = commodity.getCreateTime();
         long createTimeMillis = timestamp.longValue() * 1000L;
@@ -122,13 +133,14 @@ public class CommodityController {
         SimpleDateFormat sdf0 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String formattedDate0 = sdf0.format(new Date(updateTimeMillis));
         commodityInfoVO.setUpdateTime(formattedDate0);
-        return commodityInfoVO;
+        return new Response(1001, commodityInfoVO);
     }
 
-    @RequestMapping(value = "/commodity/extractbyid")
-    public Commodity extractCommodityById(@RequestParam Long id) {
+    @RequestMapping(value = "/commodity/extract")
+    public Response extractCommodityById(@RequestParam Long id) {
         try {
-            return commodityService.extractById(id);
+           Commodity commodity =  commodityService.extractById(id);
+           return new Response(1001,commodity);
         } catch (Exception e) {
             return null;
         }

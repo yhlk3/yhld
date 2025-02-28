@@ -1,6 +1,8 @@
 package com.example.app.controller;
 
+
 import com.example.app.domain.*;
+import com.example.module.utils.Response;
 import com.example.module.category.entity.Category;
 import com.example.module.category.service.CategoryService;
 import com.example.module.commodity.entity.Commodity;
@@ -20,7 +22,7 @@ public class CategoryController {
     private CommodityService commodityService;
 
     @RequestMapping("/category/list")
-    public CategoryListResponse list() {
+    public Response list() {
         List<Category> categories = categoryService.getTopCategories();
         List<CategoryListVO> voList = new ArrayList<>();
         for (Category category : categories) {
@@ -42,10 +44,11 @@ public class CategoryController {
         }
         CategoryListResponse response = new CategoryListResponse();
         response.setList(voList);
-        return response;
+        Response result = new Response(1001, response);
+        return result;
     }
     @RequestMapping("/category/list/info")
-    public CategoryWithCommodityVO listInfo(@RequestParam("id") Long id, @RequestParam("page") int page) {
+    public Response listInfo(@RequestParam("id") Long id, @RequestParam("page") int page) {
         double ar = 1.0; // 默认值
         int pageSize = 5;
         List<Category> Children =categoryService.getChildByParentId(id);
@@ -77,6 +80,7 @@ public class CategoryController {
         }
         CategoryWithCommodity.setCategoryList(vo);
         CategoryWithCommodity.setCommodityList(commodityList);
-        return CategoryWithCommodity;
+        Response result = new Response(1001, CategoryWithCommodity);
+        return result;
     }
 }
