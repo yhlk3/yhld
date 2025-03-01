@@ -2,6 +2,7 @@ com\example\app\config\AppLoggedInValidationInterceptor.class
 com\example\app\controller\FileUploadController.class
 com\example\app\domain\SignVO.class
 com\example\app\domain\CommodityInfoVO.class
+com\example\app\domain\BaseContentValueVo.class
 com\example\app\domain\CommodityWp.class
 com\example\app\domain\CommodityListVO.class
 com\example\app\controller\GlobalExceptionHandler.class
@@ -10,7 +11,6 @@ com\example\app\domain\CategoryChildrenVO.class
 com\example\app\controller\GlobalErrorController.class
 com\example\app\config\WebConfig.class
 com\example\app\domain\CategoryWithCommodityVO.class
-com\example\app\domain\CommodityDetailsVO.class
 com\example\app\controller\CommodityController.class
 com\example\app\domain\CategoryListVO.class
 com\example\app\controller\CategoryController.class

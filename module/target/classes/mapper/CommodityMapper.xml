@@ -8,7 +8,7 @@
         <if test="commodity.title != null and commodity.title != ''">title,</if>
         <if test="commodity.price != null">price,</if>
         <if test="commodity.location != null and commodity.location != ''">location,</if>
-        <if test="commodity.introduction != null and commodity.introduction != ''">introduction,</if>
+        <if test="commodity.details != null and commodity.details != ''">details,</if>
         <if test="commodity.images != null and commodity.images != ''">images,</if>
         <if test="commodity.createTime != null">create_time,</if>
         <if test="commodity.updateTime != null">update_time,</if>
@@ -18,7 +18,7 @@
         <if test="commodity.title != null and commodity.title != ''" >#{commodity.title},</if>
         <if test="commodity.price != null">#{commodity.price},</if>
         <if test="commodity.location != null and commodity.location != ''">#{commodity.location},</if>
-        <if test="commodity.introduction != null and commodity.introduction != ''">#{commodity.introduction},</if>
+        <if test="commodity.details != null and commodity.details != ''">#{commodity.details},</if>
         <if test="commodity.images != null and commodity.images != ''">#{commodity.images},</if>
         <if test="commodity.createTime != null">#{commodity.createTime},</if>
         <if test="commodity.updateTime != null">#{commodity.updateTime},</if>
@@ -33,7 +33,7 @@
             <if test="commodity.title != null and commodity.title != ''">title = #{commodity.title},</if>
             <if test="commodity.price != null">price = #{commodity.price},</if>
             <if test="commodity.location != null and commodity.location != ''">location = #{commodity.location},</if>
-            <if test="commodity.introduction != null and commodity.introduction != ''">introduction = #{commodity.introduction},</if>
+            <if test="commodity.details != null and commodity.details != ''">idetails = #{commodity.details},</if>
             <if test="commodity.images != null and commodity.images != ''">images = #{commodity.images},</if>
             <if test="commodity.createTime != null">create_time = #{commodity.createTime},</if>
             <if test="commodity.updateTime != null">update_time = #{commodity.updateTime},</if>

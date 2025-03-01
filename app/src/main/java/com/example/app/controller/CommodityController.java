@@ -2,8 +2,6 @@ package com.example.app.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.app.domain.*;
-import com.example.module.details.entity.CommodityDetails;
-import com.example.module.details.service.CommodityDetailsService;
 import com.example.module.utils.Response;
 import com.example.module.category.entity.Category;
 import com.example.module.category.service.CategoryService;
@@ -26,8 +24,7 @@ public class CommodityController {
     private CommodityService commodityService;
     @Autowired
     private CategoryService categoryService;
-    @Autowired
-    private CommodityDetailsService commodityDetailsService;
+
 
     @RequestMapping("/commodity/search")
     public Response search(@RequestParam(value = "keyword", required = false) String keyword,
@@ -139,19 +136,10 @@ public class CommodityController {
             Response result = new Response(3054, null);
             return result;
         }
-        List<CommodityDetails> commodityDetails = commodityDetailsService.getByCommodityId(id);
-        List<CommodityDetailsVO> commodityDetailsVOList = new ArrayList<>();
-        for (CommodityDetails details : commodityDetails) {
-            //使用get set方法
-            CommodityDetailsVO vo = new CommodityDetailsVO();
-            vo.setContentType(details.getContentType());
-            vo.setContentValue(details.getContentValue());
-            vo.setSequence(details.getSequence());
-            commodityDetailsVOList.add(vo);
-        }
         Category category = categoryService.getById(commodity.getCategoryId());
         CommodityInfoVO vo = new CommodityInfoVO();
-        vo.setIntroduction(commodityDetailsVOList);
+        List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
+        vo.setDetails(contents);
         vo.setPrice(commodity.getPrice());
         vo.setTitle(commodity.getTitle());
         vo.setImages(Arrays.asList(commodity.getImages().split("\\$")));

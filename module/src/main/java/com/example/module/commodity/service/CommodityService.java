@@ -26,7 +26,7 @@ public class CommodityService {
         return commodity;
     }
 
-    public Long edit(Long id, String title, Integer price, String location, String introduction, String images,Long categoryId) {
+    public Long edit(Long id, String title, Integer price, String location, String details, String images,Long categoryId) {
         if (title == null || title.isEmpty()) {
             throw new RuntimeException("标题不能为空");
         }
@@ -35,9 +35,6 @@ public class CommodityService {
         }
         if (location == null || location.isEmpty()) {
             throw new RuntimeException("位置不能为空");
-        }
-        if (introduction == null || introduction.isEmpty()) {
-            throw new RuntimeException("介绍不能为空");
         }
         if (images == null || images.isEmpty()) {
             throw new RuntimeException("图片不能为空");
@@ -51,7 +48,7 @@ public class CommodityService {
         commodity.setTitle(title);
         commodity.setPrice(price);
         commodity.setLocation(location);
-        commodity.setIntroduction(introduction);
+        commodity.setDetails(details);
         commodity.setImages(images);
         commodity.setIsDeleted(0);
         commodity.setCategoryId(categoryId);

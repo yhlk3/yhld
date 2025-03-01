@@ -12,7 +12,7 @@ public class Commodity {
     private String title;
     private Integer price;
     private String location;
-    private String introduction;
+    private String details;
     private String images;
     private Integer createTime;
     private Integer updateTime;

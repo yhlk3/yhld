@@ -8,7 +8,7 @@ import java.util.List;
 public class CommodityInfoVO {
     private Integer price;
     private String title;
-    private List<CommodityDetailsVO> introduction;
+    private List<BaseContentValueVo> details;
     private List<String> images;
     private String createTime;
     private String updateTime;

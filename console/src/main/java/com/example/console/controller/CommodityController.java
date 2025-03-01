@@ -1,8 +1,7 @@
 package com.example.console.controller;
 
-import com.example.console.domain.CommodityDetailsVO;
-import com.example.module.details.entity.CommodityDetails;
-import com.example.module.details.service.CommodityDetailsService;
+import com.alibaba.fastjson.JSON;
+import com.example.console.domain.BaseContentValueVo;
 import com.example.module.utils.Response;
 import com.example.console.domain.CommodityInfoVO;
 import com.example.console.domain.CommodityListResponse;
@@ -25,8 +24,6 @@ import java.util.List;
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
-    @Autowired
-    private CommodityDetailsService commodityDetailsService;
     @RequestMapping("/commodity/insert")
     public Response insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,
@@ -110,16 +107,8 @@ public class CommodityController {
         }
 
         CommodityInfoVO commodityInfoVO = new CommodityInfoVO();
-        List<CommodityDetails> commodityDetails =commodityDetailsService.getByCommodityId(id);
-        List<CommodityDetailsVO> commodityDetailsVOList = new ArrayList<>();
-        for (CommodityDetails details : commodityDetails) {
-            CommodityDetailsVO vo = new CommodityDetailsVO();
-            vo.setContentType(details.getContentType());
-            vo.setContentValue(details.getContentValue());
-            vo.setSequence(details.getSequence());
-            commodityDetailsVOList.add(vo);
-        }
-        commodityInfoVO.setIntroduction(commodityDetailsVOList);
+        List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
+        commodityInfoVO.setDetails(contents);
         commodityInfoVO.setPrice(commodity.getPrice());
         commodityInfoVO.setTitle(commodity.getTitle());
         commodityInfoVO.setImages(Arrays.asList(commodity.getImages().split("\\$")));

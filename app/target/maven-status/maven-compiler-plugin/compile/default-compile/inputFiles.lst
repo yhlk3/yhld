@@ -9,10 +9,10 @@ C:\springcode\shop\app\src\main\java\com\example\app\domain\CategoryWithCommodit
 C:\springcode\shop\app\src\main\java\com\example\app\controller\CommodityController.java
 C:\springcode\shop\app\src\main\java\com\example\app\controller\GlobalErrorController.java
 C:\springcode\shop\app\src\main\java\com\example\app\config\AppLoggedInValidationInterceptor.java
+C:\springcode\shop\app\src\main\java\com\example\app\domain\BaseContentValueVo.java
 C:\springcode\shop\app\src\main\java\com\example\app\controller\FileUploadController.java
 C:\springcode\shop\app\src\main\java\com\example\app\controller\UserController.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CommodityInfoVO.java
-C:\springcode\shop\app\src\main\java\com\example\app\domain\CommodityDetailsVO.java
 C:\springcode\shop\app\src\main\java\com\example\app\config\AppLoginValidationInterceptor.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CategoryListVO.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CommodityWp.java

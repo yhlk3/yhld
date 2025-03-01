@@ -1,9 +1,7 @@
 C:\springcode\shop\module\src\main\java\com\example\module\category\entity\Category.java
-C:\springcode\shop\module\src\main\java\com\example\module\details\service\CommodityDetailsService.java
 C:\springcode\shop\module\src\main\java\com\example\module\utils\ResponseCode.java
 C:\springcode\shop\module\src\main\java\com\example\module\entity\Sign.java
 C:\springcode\shop\module\src\main\java\com\example\module\utils\PasswordUtils.java
-C:\springcode\shop\module\src\main\java\com\example\module\details\entity\CommodityDetails.java
 C:\springcode\shop\module\src\main\java\com\example\module\utils\ResponseStatus.java
 C:\springcode\shop\module\src\main\java\com\example\module\commodity\service\CommodityService.java
 C:\springcode\shop\module\src\main\java\com\example\module\category\service\CategoryService.java
@@ -11,7 +9,6 @@ C:\springcode\shop\module\src\main\java\com\example\module\utils\Response.java
 C:\springcode\shop\module\src\main\java\com\example\module\commo\CodeGenerator.java
 C:\springcode\shop\module\src\main\java\com\example\module\utils\SignUtils.java
 C:\springcode\shop\module\src\main\java\com\example\module\category\mapper\CategoryMapper.java
-C:\springcode\shop\module\src\main\java\com\example\module\details\mapper\CommodityDetailsMapper.java
 C:\springcode\shop\module\src\main\java\com\example\module\entity\CommodityCategoryDTO.java
 C:\springcode\shop\module\src\main\java\com\example\module\commodity\mapper\CommodityMapper.java
 C:\springcode\shop\module\src\main\java\com\example\module\commodity\entity\Commodity.java
