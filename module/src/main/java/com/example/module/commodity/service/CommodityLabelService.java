@@ -35,8 +35,8 @@ public class CommodityLabelService {
     public int delete(Long id) {
         return commodityLabelMapper.delete(id);
     }
-    @Transactional
-    public void checkCommodityIdAndLabelIdS(Long commodityId, List<Long> labelIds) {
+
+    public void processCommodityLabels(Long commodityId, List<Long> labelIds) {
         for (Long labelId : labelIds) {
             Long id = commodityLabelMapper.getIdByCommodityIdAndLabelId(commodityId, labelId);
             if (id == null) {

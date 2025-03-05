@@ -7,6 +7,7 @@ import com.example.module.commodity.request.CommodityContentDto;
 import com.example.module.entity.CommodityCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -16,6 +17,11 @@ import java.util.regex.Pattern;
 public class CommodityService {
     @Autowired
     private CommodityMapper commodityMapper;
+    @Autowired
+    private LabelService labelService;
+    @Autowired
+    private CommodityLabelService commodityLabelService;
+
 
     public Commodity getById(Long id) {
         if (id == null) {
@@ -27,8 +33,8 @@ public class CommodityService {
         }
         return commodity;
     }
-
-    public Long edit(Long id, String title, Integer price, String location, String details, String images,Long categoryId) {
+    @Transactional
+    public Long edit(Long id, String title, Integer price, String location, String details, String images,Long categoryId,String[] tagsArray) {
         if (title == null || title.isEmpty()) {
             throw new RuntimeException("标题不能为空");
         }
@@ -58,7 +64,6 @@ public class CommodityService {
         commodity.setImages(images);
         commodity.setIsDeleted(0);
         commodity.setCategoryId(categoryId);
-
         if (id != null) {
             Commodity existingCommodity = commodityMapper.getById(id);
             if (existingCommodity == null) {
@@ -67,11 +72,15 @@ public class CommodityService {
             commodity.setId(id);
             commodity.setUpdateTime(timestamp);
             commodityMapper.update(commodity);
+            List<Long> labelIds =labelService.processLabels(tagsArray);
+            commodityLabelService.processCommodityLabels(id, labelIds);
             return id;
         } else {
             commodity.setCreateTime(timestamp);
             commodity.setUpdateTime(timestamp);
             commodityMapper.insert(commodity);
+            List<Long> labelIds =labelService.processLabels(tagsArray);
+            commodityLabelService.processCommodityLabels(commodity.getId(), labelIds);
             return commodity.getId();
         }
     }

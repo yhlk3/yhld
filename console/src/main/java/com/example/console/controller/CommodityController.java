@@ -44,13 +44,11 @@ public class CommodityController {
         //将tags以逗号分割为一个字符串数组
         String[] tagsArray = tags.split("\\$");
         try {
-            Long commodityId = commodityService.edit(id, title, price, location, details,images,categoryId);
-            List<Long> labelIds =labelService.checkLabels(tagsArray);
-            commodityLabelService.checkCommodityIdAndLabelIdS(commodityId, labelIds);
-            return new Response(1001);
+            Long commodityId = commodityService.edit(id, title, price, location, details,images,categoryId,tagsArray);
+            return new Response(1001, commodityId);
             } catch (Exception e) {
             e.printStackTrace();
-            return new Response(3055,null);
+            return new Response(3055);
         }
 
     }
@@ -68,9 +66,7 @@ public class CommodityController {
         //将tags以逗号分割为一个字符串数组
         String[] tagsArray = tags.split("\\$");
         try {
-            commodityService.edit(id, title, price, location, details, images, categoryId);
-            List<Long> labelIds =labelService.checkLabels(tagsArray);
-            commodityLabelService.checkCommodityIdAndLabelIdS(id, labelIds);
+            commodityService.edit(id, title, price, location, details, images, categoryId,tagsArray);
             return new Response(1001);
 
         } catch (Exception e) {

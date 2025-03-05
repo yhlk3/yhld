@@ -40,8 +40,8 @@ public class LabelService {
     public Long getIdByName(String name){
         return labelMapper.getIdByName(name);
     }
-    @Transactional
-    public List<Long> checkLabels(String[] names){
+
+    public List<Long> processLabels(String[] names){
         List<Long> ids = new ArrayList<>();
         for (String name : names) {
             Long id = getIdByName(name);
