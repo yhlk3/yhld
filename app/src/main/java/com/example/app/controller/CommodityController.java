@@ -138,8 +138,12 @@ public class CommodityController {
         }
         Category category = categoryService.getById(commodity.getCategoryId());
         CommodityInfoVO vo = new CommodityInfoVO();
-        List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
-        vo.setDetails(contents);
+        try {
+            List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
+            vo.setDetails(contents);
+        } catch (Exception e) {
+            return new Response(4004);
+        }
         vo.setPrice(commodity.getPrice());
         vo.setTitle(commodity.getTitle());
         vo.setImages(Arrays.asList(commodity.getImages().split("\\$")));

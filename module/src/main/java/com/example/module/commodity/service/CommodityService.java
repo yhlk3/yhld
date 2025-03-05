@@ -1,7 +1,9 @@
 package com.example.module.commodity.service;
 
+import com.alibaba.fastjson.JSON;
 import com.example.module.commodity.entity.Commodity;
 import com.example.module.commodity.mapper.CommodityMapper;
+import com.example.module.commodity.request.CommodityContentDto;
 import com.example.module.entity.CommodityCategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -42,7 +44,11 @@ public class CommodityService {
         if (categoryId == null) {
             throw new RuntimeException("分类ID不能为空");
         }
-
+        List<CommodityContentDto> detailsList = JSON.parseArray(details, CommodityContentDto.class);
+        for (CommodityContentDto content : detailsList) {
+            if (!CommodityDefine.isCommodityContentType(content.getType())) {
+                throw new RuntimeException("Commodity content is error");
+            }
         int timestamp = (int) (System.currentTimeMillis() / 1000);
         Commodity commodity = new Commodity();
         commodity.setTitle(title);
@@ -68,6 +74,8 @@ public class CommodityService {
             commodityMapper.insert(commodity);
             return commodity.getId();
         }
+    }
+        return null;
     }
     public int delete(Long id) {
         if (id == null) {

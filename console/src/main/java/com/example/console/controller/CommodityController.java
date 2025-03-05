@@ -2,6 +2,8 @@ package com.example.console.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.example.console.domain.BaseContentValueVo;
+import com.example.module.commodity.service.CommodityLabelService;
+import com.example.module.commodity.service.LabelService;
 import com.example.module.utils.Response;
 import com.example.console.domain.CommodityInfoVO;
 import com.example.console.domain.CommodityListResponse;
@@ -24,21 +26,30 @@ import java.util.List;
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
+    @Autowired
+    private LabelService labelService;
+    @Autowired
+    private CommodityLabelService commodityLabelService;
     @RequestMapping("/commodity/insert")
     public Response insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,
                                 @RequestParam("price") Integer price,
                                 @RequestParam("location") String location,
-                                @RequestParam("introduction") String introduction,
+                                @RequestParam("details") String details,
                                 @RequestParam("images") String images,
+                                @RequestParam("tags") String tags,
                                 @RequestParam("categoryId") Long categoryId) {
         title = title.trim();
         location = location.trim();
-        introduction = introduction.trim();
+        //将tags以逗号分割为一个字符串数组
+        String[] tagsArray = tags.split("\\$");
         try {
-            commodityService.edit(id, title, price, location, introduction,images,categoryId);
+            Long commodityId = commodityService.edit(id, title, price, location, details,images,categoryId);
+            List<Long> labelIds =labelService.checkLabels(tagsArray);
+            commodityLabelService.checkCommodityIdAndLabelIdS(commodityId, labelIds);
             return new Response(1001);
             } catch (Exception e) {
+            e.printStackTrace();
             return new Response(3055,null);
         }
 
@@ -48,14 +59,18 @@ public class CommodityController {
                                 @RequestParam("title") String title,
                                 @RequestParam( "price") Integer price,
                                 @RequestParam("location") String location,
-                                @RequestParam("introduction") String introduction,
+                                @RequestParam("details") String details,
                                 @RequestParam("images") String images,
+                                @RequestParam("tags") String tags,
                                 @RequestParam("categoryId") Long categoryId) {
         title = title.trim();
         location = location.trim();
-        introduction = introduction.trim();
+        //将tags以逗号分割为一个字符串数组
+        String[] tagsArray = tags.split("\\$");
         try {
-            commodityService.edit(id, title, price, location, introduction, images, categoryId);
+            commodityService.edit(id, title, price, location, details, images, categoryId);
+            List<Long> labelIds =labelService.checkLabels(tagsArray);
+            commodityLabelService.checkCommodityIdAndLabelIdS(id, labelIds);
             return new Response(1001);
 
         } catch (Exception e) {
@@ -107,8 +122,12 @@ public class CommodityController {
         }
 
         CommodityInfoVO commodityInfoVO = new CommodityInfoVO();
-        List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
-        commodityInfoVO.setDetails(contents);
+        try {
+            List<BaseContentValueVo> contents = JSON.parseArray(commodity.getDetails(), BaseContentValueVo.class);
+            commodityInfoVO.setDetails(contents);
+        } catch (Exception e) {
+            return new Response(4004);
+        }
         commodityInfoVO.setPrice(commodity.getPrice());
         commodityInfoVO.setTitle(commodity.getTitle());
         commodityInfoVO.setImages(Arrays.asList(commodity.getImages().split("\\$")));

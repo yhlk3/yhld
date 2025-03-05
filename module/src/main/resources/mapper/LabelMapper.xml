@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.module.commodity.mapper.LabelMapper">
+
+    <insert id="insert" parameterType="com.example.module.commodity.entity.Label"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO label (
+        <if test="label.name != null and label.name != ''">name,</if>
+        <if test="label.createTime != null">create_time,</if>
+        <if test="label.updateTime != null">update_time,</if>
+        is_deleted
+        ) VALUES (
+        <if test="label.name != null and label.name != ''" >#{label.name},</if>
+        <if test="label.createTime != null">#{label.createTime},</if>
+        <if test="label.updateTime != null">#{label.updateTime},</if>
+        #{label.isDeleted}
+        )
+    </insert>
+</mapper>
