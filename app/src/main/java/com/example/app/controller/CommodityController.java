@@ -92,6 +92,7 @@ public class CommodityController {
     }
     @RequestMapping("/commodity/list")
     public Response list(@RequestParam("page") int page) {
+        System.out.println("Master branch modification");
         int pageSize = 5;
         List<Commodity> commodities;
         try {
