@@ -103,8 +103,6 @@ public class CommodityController {
     }
     @RequestMapping("/commodity/list")
     public Response list(@RequestParam("page") int page) {
-        System.out.println("Resolved conflict: Combined modification");
-
         int pageSize = 5;
         List<Commodity> commodities;
         try {

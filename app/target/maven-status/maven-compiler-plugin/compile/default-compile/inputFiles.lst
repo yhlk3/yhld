@@ -1,3 +1,5 @@
+C:\springcode\shop\app\src\main\java\com\example\app\controller\SmsTaskController.java
+C:\springcode\shop\app\src\main\java\com\example\app\controller\SmsController.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\ImageInfoVO.java
 C:\springcode\shop\app\src\main\java\com\example\app\controller\GlobalExceptionHandler.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CategoryListResponse.java
@@ -13,6 +15,7 @@ C:\springcode\shop\app\src\main\java\com\example\app\domain\BaseContentValueVo.j
 C:\springcode\shop\app\src\main\java\com\example\app\controller\FileUploadController.java
 C:\springcode\shop\app\src\main\java\com\example\app\controller\UserController.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CommodityInfoVO.java
+C:\springcode\shop\app\src\main\java\com\example\app\config\RedisConfig.java
 C:\springcode\shop\app\src\main\java\com\example\app\config\AppLoginValidationInterceptor.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CategoryListVO.java
 C:\springcode\shop\app\src\main\java\com\example\app\domain\CommodityWp.java

@@ -32,6 +32,8 @@ public class ResponseCode {
         statusMap.put(3055, "新增失败");
         statusMap.put(3056, "修改失败");
         statusMap.put(3057, "删除失败");
+        //发送短信异常
+        statusMap.put(4001, "发送短信失败");
 
         //other error
         statusMap.put(4003, "没有权限");

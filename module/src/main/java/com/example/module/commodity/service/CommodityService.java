@@ -94,16 +94,13 @@ public class CommodityService {
         if (existingCommodity == null) {
             throw new RuntimeException("商品ID不存在");
         }
-
         int timestamp = (int) (System.currentTimeMillis() / 1000);
         return commodityMapper.delete(id, timestamp);
     }
     public List<Commodity> getCommoditiesByPage(int page,int pageSize) {
-
         int offset = (page - 1) * pageSize;
         return commodityMapper.findPage(offset, pageSize);
     }
-
     public int getTotalCommodities() {
         return commodityMapper.count();
     }
@@ -120,7 +117,6 @@ public class CommodityService {
         String ids = idsStringBuilder.toString();
         return commodityMapper.findByKeywordAndPage(keyword, offset, pageSize, ids);
     }
-
     public Commodity extractById(Long id) {
         if (id == null) {
             throw new RuntimeException("商品ID不能为空");

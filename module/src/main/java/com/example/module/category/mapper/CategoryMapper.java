@@ -42,9 +42,4 @@ public interface CategoryMapper {
 
     List<Category> getCategoriesByIds(@Param("ids") String ids);
 
-
-
-
-
-
 }
