@@ -13,9 +13,7 @@ public class WebConfig implements WebMvcConfigurer {
                 .addPathPatterns("/user/login")
                 .addPathPatterns("/user/register");
         registry.addInterceptor(new AppLoggedInValidationInterceptor())
-                .addPathPatterns("/commodity/*")
                 .addPathPatterns("/category/*");
-
     }
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**") // 允许所有路径
