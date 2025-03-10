@@ -8,6 +8,7 @@ import com.example.module.category.service.CategoryService;
 import com.example.module.commodity.entity.Commodity;
 import com.example.module.commodity.service.CommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +25,8 @@ public class CommodityController {
     private CommodityService commodityService;
     @Autowired
     private CategoryService categoryService;
-
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
 
     @RequestMapping("/commodity/search")
     public Response search(@RequestParam(value = "keyword", required = false) String keyword,
@@ -42,6 +44,14 @@ public class CommodityController {
             // 默认值
             wp.setPage(1);
             wp.setKeyword(keyword);
+        }
+        // 构建缓存键
+        String cacheKey = "commodity:search:" + wp.getKeyword() + ":" + wp.getPage();
+        // 检查缓存
+        CommodityListResponse cachedResponse = (CommodityListResponse) redisTemplate.opsForValue().get(cacheKey);
+        if (cachedResponse != null) {
+            Response result = new Response(1001, cachedResponse);
+            return result;
         }
         List<Commodity> commodities = commodityService.getCommoditiesByKeywordAndPage(wp.getKeyword(), wp.getPage(), pageSize);
         StringBuilder idsStringBuilder = new StringBuilder();
@@ -87,11 +97,13 @@ public class CommodityController {
         String jsonWpString = JSON.toJSONString(wp);
         String encodedWpStringResponse = Base64.encodeBase64URLSafeString(jsonWpString.getBytes(StandardCharsets.UTF_8));
         response.setWp(encodedWpStringResponse);
+        redisTemplate.opsForValue().set(cacheKey, response);
         Response result = new Response(1001, response);
         return result;
     }
     @RequestMapping("/commodity/list")
     public Response list(@RequestParam("page") int page) {
+        System.out.println("Conflict test branch modification");
         int pageSize = 5;
         List<Commodity> commodities;
         try {
