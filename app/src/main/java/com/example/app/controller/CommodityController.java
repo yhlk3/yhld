@@ -17,6 +17,7 @@ import org.apache.commons.codec.binary.Base64;
 
 import java.nio.charset.StandardCharsets;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @RestController
 public class CommodityController {
@@ -97,7 +98,7 @@ public class CommodityController {
         String jsonWpString = JSON.toJSONString(wp);
         String encodedWpStringResponse = Base64.encodeBase64URLSafeString(jsonWpString.getBytes(StandardCharsets.UTF_8));
         response.setWp(encodedWpStringResponse);
-        redisTemplate.opsForValue().set(cacheKey, response);
+        redisTemplate.opsForValue().set(cacheKey, response, 3600, TimeUnit.SECONDS);
         Response result = new Response(1001, response);
         return result;
     }
