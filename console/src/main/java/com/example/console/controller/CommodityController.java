@@ -26,10 +26,7 @@ import java.util.List;
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
-    @Autowired
-    private LabelService labelService;
-    @Autowired
-    private CommodityLabelService commodityLabelService;
+
     @RequestMapping("/commodity/insert")
     public Response insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,

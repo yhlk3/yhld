@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 @Mapper
 public interface UserMapper {
     @Select("select * from user where id = #{id} and is_deleted = 0")
@@ -27,5 +29,8 @@ public interface UserMapper {
     int delete(Long id);
     @Select("select * from user where id = #{id}")
     User extractById(Long id);
+    //getAllUsers
+    @Select("select * from user where is_deleted = 0")
+    List<User> getAllUsers();
 
 }

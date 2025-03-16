@@ -6,6 +6,7 @@ import com.example.module.utils.PasswordUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
@@ -70,6 +71,9 @@ public class UserService {
         user.setUpdateTime(timestamp);
         user.setIsDeleted(0);
         userMapper.insert(user);
+    }
+    public List<User> getAllUsers() {
+        return userMapper.getAllUsers();
     }
 
 }

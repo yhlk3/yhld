@@ -24,6 +24,8 @@ public class ResponseCode {
 
         //file upload error
         statusMap.put(3011, "文件上传失败");
+        statusMap.put(3012, "文件为空");
+        statusMap.put(3013, "文件生成失败");
 
         //commodity and category error
         statusMap.put(3052, "ID不正确");

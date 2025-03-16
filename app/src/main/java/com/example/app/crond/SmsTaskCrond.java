@@ -3,25 +3,22 @@ package com.example.app.crond;
 import com.example.module.sms.service.SmsService;
 import com.example.module.sms.task.entity.SmsTask;
 import com.example.module.sms.task.service.SmsTaskService;
-import com.example.module.utils.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@RestController
+@Component
 public class SmsTaskCrond {
     @Autowired
     private SmsTaskService smsTaskService;
     @Autowired
     private SmsService smsService;
 
-    @RequestMapping("/sms/task/scan")
     @Scheduled(fixedRate = 2000)
-    public Response scan(){
+    public void scan(){
         List<SmsTask> smsTasks = smsTaskService.getByStatus();
         List<String> phoneNumbers = new ArrayList<>();
         StringBuilder idsStringBuilder = new StringBuilder();
@@ -38,8 +35,7 @@ public class SmsTaskCrond {
             smsService.sendBatchSms(phoneNumbers);
             smsTaskService.setStatus(ids);
         } catch (Exception e) {
-            return new Response(4001);
+            e.printStackTrace();
         }
-        return new Response(1001);
     }
 }

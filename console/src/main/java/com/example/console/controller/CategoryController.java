@@ -1,5 +1,6 @@
 package com.example.console.controller;
 
+import com.example.console.domain.CategoryDTO;
 import com.example.module.utils.Response;
 import com.example.module.category.entity.Category;
 import com.example.console.domain.CategoryTreeNode;
@@ -54,5 +55,18 @@ public class CategoryController {
             }
         }
         return new Response(1001, rootNodes);
+    }
+    @RequestMapping("/category/list")
+    public Response list() {
+        List<Category> categories =categoryService.getAllCategories();
+        List<CategoryDTO> voList = new ArrayList<>();
+        for (Category category : categories) {
+            CategoryDTO vo = new CategoryDTO();
+            vo.setId(category.getId());
+            vo.setName(category.getName());
+            vo.setParentId(category.getParentId());
+            voList.add(vo);
+        }
+        return new Response(1001,voList);
     }
 }

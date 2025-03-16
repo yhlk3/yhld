@@ -9,7 +9,10 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"com.example.module", "com.example.app"})
-@MapperScan("com.example.module")
+@MapperScan(
+        basePackages = "com.example.module",
+        sqlSessionFactoryRef = "sqlSessionFactory"
+)
 @EnableScheduling
 public class AppApplication {
     public static void main(String[] args) {
