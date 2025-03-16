@@ -110,21 +110,21 @@ public class ExcelController {
         List<Category> categories = categoryService.getAllCategories();
         List<CategoryDTO> categoryDTOS = new ArrayList<>();
         for (Category category : categories) {
-            CategoryDTO DTO = new CategoryDTO();
-            DTO.setId(category.getId());
-            DTO.setName(category.getName());
-            DTO.setParentId(category.getParentId());
-            categoryDTOS.add(DTO);
+            CategoryDTO categoryDTO = new CategoryDTO();
+            categoryDTO.setId(category.getId());
+            categoryDTO.setName(category.getName());
+            categoryDTO.setParentId(category.getParentId());
+            categoryDTOS.add(categoryDTO);
         }
         List<User> users = userService.getAllUsers();
         List<UserDTO> userDTOS = new ArrayList<>();
         for (User user : users) {
-            UserDTO DTO = new UserDTO();
-            DTO.setId(user.getId());
-            DTO.setPhone(user.getPhone());
-            DTO.setNickName(user.getNickName());
-            DTO.setCreateTime(user.getCreateTime());
-            userDTOS.add(DTO);
+            UserDTO userDTO = new UserDTO();
+            userDTO.setId(user.getId());
+            userDTO.setPhone(user.getPhone());
+            userDTO.setNickName(user.getNickName());
+            userDTO.setCreateTime(user.getCreateTime());
+            userDTOS.add(userDTO);
         }
         List<CategoryExportVO> categoryData = CategoryProcessor.process(categoryDTOS);
         List<UserDTO> userData = userDTOS;

@@ -7,6 +7,8 @@ import com.example.app.domain.ImageInfoVO;
 import com.example.module.banner.service.BannerService;
 import com.example.module.category.service.CategoryService;
 import com.example.module.commodity.entity.Commodity;
+import com.example.module.event.entity.Event;
+import com.example.module.banner.entity.Banner;
 import com.example.module.commodity.service.CommodityService;
 import com.example.module.event.service.EventService;
 import com.example.module.utils.Response;
@@ -19,6 +21,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 @RestController
 public class HomeController {
@@ -36,26 +40,37 @@ public class HomeController {
     private CommodityService commodityService;
 
     @RequestMapping("/home")
-    public Response getHomeData() {
+    public Response getHomeData() throws ExecutionException, InterruptedException {
         HomeResponseVO response = new HomeResponseVO();
-        //Banner
-        response.setBanners(bannerService.getBanners());
-        //Category
-      List<Category> categoryList = categoryService.getTopCategories();
-      List<CategoryVO> categoryVOList = new ArrayList<>();
-      for (Category category : categoryList) {
-          CategoryVO categoryVO = new CategoryVO();
-          categoryVO.setId(category.getId());
-          categoryVO.setName(category.getName());
-          categoryVO.setImage(category.getImage());
-          categoryVOList.add(categoryVO);
-      }
-      response.setCategories(categoryVOList);
-        //Event
-        response.setEvents(eventService.getEvents());
-        //Commodity
-        int pageSize = 5;
-        List<Commodity> commodities = commodityService.getCommoditiesByPage(1, pageSize);
+
+        // 并行获取基础数据
+        CompletableFuture<List<Banner>> bannerFuture = CompletableFuture.supplyAsync(() -> bannerService.getBanners());
+        CompletableFuture<List<Event>> eventFuture = CompletableFuture.supplyAsync(() -> eventService.getEvents());
+        CompletableFuture<List<Category>> categoryFuture = CompletableFuture.supplyAsync(() -> categoryService.getTopCategories());
+        CompletableFuture<List<Commodity>> commodityFuture = CompletableFuture.supplyAsync(() ->
+                commodityService.getCommoditiesByPage(1, 5));
+
+        // 等待所有任务完成
+        CompletableFuture.allOf(bannerFuture, eventFuture, categoryFuture, commodityFuture).join();
+
+        // 设置基础数据
+        response.setBanners(bannerFuture.get());
+        response.setEvents(eventFuture.get());
+
+        // 分类数据转换
+        List<Category> categoryList = categoryFuture.get();
+        List<CategoryVO> categoryVOList = new ArrayList<>();
+        for (Category category : categoryList) {
+            CategoryVO categoryVO = new CategoryVO();
+            categoryVO.setId(category.getId());
+            categoryVO.setName(category.getName());
+            categoryVO.setImage(category.getImage());
+            categoryVOList.add(categoryVO);
+        }
+        response.setCategories(categoryVOList);
+
+        // 商品数据处理
+        List<Commodity> commodities = commodityFuture.get();
         StringBuilder idsStringBuilder = new StringBuilder();
         for (Commodity commodity : commodities) {
             if (idsStringBuilder.length() > 0) {
@@ -64,11 +79,18 @@ public class HomeController {
             idsStringBuilder.append(commodity.getCategoryId());
         }
         String ids = idsStringBuilder.toString();
-        List<Category> categories = categoryService.getCategoriesByIds(ids);
-        Map<Long, String> categoryMap = new HashMap<>();
-        for (Category category : categories) {
-            categoryMap.put(category.getId(), category.getName());
-        }
+
+        CompletableFuture<Map<Long, String>> categoryMapFuture = CompletableFuture.supplyAsync(() -> {
+            List<Category> categories = categoryService.getCategoriesByIds(ids);
+            Map<Long, String> map = new HashMap<>();
+            for (Category category : categories) {
+                map.put(category.getId(), category.getName());
+            }
+            return map;
+        });
+
+        // 保持原有商品VO转换逻辑
+        Map<Long, String> categoryMap = categoryMapFuture.get();
         List<CommodityListVO> voList = new ArrayList<>();
         for (Commodity commodity : commodities) {
             CommodityListVO vo = new CommodityListVO();
@@ -86,11 +108,13 @@ public class HomeController {
             String categoryName = categoryMap.get(commodity.getCategoryId());
             if (categoryName != null) {
                 vo.setCategory(categoryName);
+            } else {
+                continue;
             }
-            else {continue;}
             voList.add(vo);
         }
         response.setCommodities(voList);
+
         return new Response(1001, response);
     }
 }
