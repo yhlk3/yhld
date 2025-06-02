@@ -21,8 +21,8 @@ public interface CommodityMapper {
 
     int insert(@Param("commodity")Commodity commodity);
 
-    @Update("update commodity set is_deleted = 1 update_time = #{update_time}")
-    int delete(Long id, Integer updateTime);
+    @Update("update commodity set is_deleted = 1 ,update_time = #{update_time} where id =#{id} ")
+    int delete(@Param("id") Long id,@Param("update_time") Integer updateTime);
 
     @Select("select * from commodity where is_deleted=0 order by id limit #{offset}, #{pageSize} ")
     List<Commodity> findPage(@Param("offset") int offset, @Param("pageSize") int pageSize);
@@ -48,6 +48,9 @@ public interface CommodityMapper {
     List<Commodity> findCommoditiesByCategoryIds(@Param("categoryIds") String categoryIds,
                                                  @Param("offset") int offset,
                                                  @Param("pageSize") int pageSize);
+    //getByCategoryId
+    @Select("SELECT * FROM commodity WHERE category_id = #{categoryId} AND is_deleted = 0")
+    List<Commodity> getByCategoryId(@Param("categoryId") Long categoryId);
 }
 
 

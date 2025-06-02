@@ -83,4 +83,28 @@ public class CategoryController {
         Response result = new Response(1001, CategoryWithCommodity);
         return result;
     }
+    //getByCategoryId
+    @RequestMapping("/commodity/category/info")
+    public Response getByCategoryId(@RequestParam("id") Long id) {
+        List<Commodity> Commodities = commodityService.getCommoditiesByCategoryId(id);
+        List<CommodityListVO> commodityList = new ArrayList<>();
+        for (Commodity commodity : Commodities) {
+            CommodityListVO commodityListVO = new CommodityListVO();
+            commodityListVO.setId(commodity.getId());
+            String[] imagesArray = commodity.getImages().split("\\$");
+            double ar = 1.0;
+            if (imagesArray != null && imagesArray.length > 0) {
+                ar = commodityService.calculateAspectRatioFromRegex(imagesArray[0]);
+            }
+            commodityListVO.setImage(new ImageInfoVO(imagesArray[0], ar));
+            commodityListVO.setPrice(commodity.getPrice());
+            commodityListVO.setTitle(commodity.getTitle());
+            commodityListVO.setLocation(commodity.getLocation());
+            Category category = categoryService.getById(commodity.getCategoryId());
+            commodityListVO.setCategory(category.getName());
+            commodityList.add(commodityListVO);
+        }
+        Response result = new Response(1001, commodityList);
+        return result;
+    }
 }

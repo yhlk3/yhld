@@ -14,13 +14,15 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(loggedInValidationInterceptor)
-                .addPathPatterns("/commodity/*");
+                .addPathPatterns("/category/*");
 
     }
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://example.com")
-                .allowCredentials(true); // 允许携带凭证（包括Cookie）
+                .allowedOrigins("http://localhost:8080") // 允许的前端域名
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }

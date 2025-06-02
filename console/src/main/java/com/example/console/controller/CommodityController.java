@@ -1,32 +1,25 @@
 package com.example.console.controller;
 
 import com.alibaba.fastjson.JSON;
-import com.example.console.domain.BaseContentValueVo;
-import com.example.module.commodity.service.CommodityLabelService;
-import com.example.module.commodity.service.LabelService;
+import com.example.console.domain.*;
+import com.example.module.category.service.CategoryService;
 import com.example.module.utils.Response;
-import com.example.console.domain.CommodityInfoVO;
-import com.example.console.domain.CommodityListResponse;
-import com.example.console.domain.CommodityListVO;
 import com.example.module.commodity.entity.Commodity;
 import com.example.module.commodity.service.CommodityService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Date;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
 
 @RestController
 
 public class CommodityController {
     @Autowired
     private CommodityService commodityService;
-
     @RequestMapping("/commodity/insert")
     public Response insertCommodity(@RequestParam("title") String title,
                                 @RequestParam(required = false) Long id,
@@ -54,19 +47,19 @@ public class CommodityController {
                                 @RequestParam("title") String title,
                                 @RequestParam( "price") Integer price,
                                 @RequestParam("location") String location,
-                                @RequestParam("details") String details,
-                                @RequestParam("images") String images,
-                                @RequestParam("tags") String tags,
-                                @RequestParam("categoryId") Long categoryId) {
-        title = title.trim();
-        location = location.trim();
+                                    @RequestParam("details") String details,
+                                    @RequestParam("images") String images,
+                                    @RequestParam("tags") String tags,
+                                    @RequestParam("categoryId") Long categoryId) {
+
         //将tags以逗号分割为一个字符串数组
         String[] tagsArray = tags.split("\\$");
         try {
-            commodityService.edit(id, title, price, location, details, images, categoryId,tagsArray);
+            commodityService.edit(id, title, price, location, details, images, categoryId, tagsArray);
             return new Response(1001);
 
         } catch (Exception e) {
+            e.printStackTrace();
             return new Response(3056);
         }
     }
@@ -76,6 +69,7 @@ public class CommodityController {
             commodityService.delete(id);
             return new Response(1001);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return new Response(3057);
         }
     }
@@ -92,8 +86,6 @@ public class CommodityController {
         for (Commodity commodity : commodities) {
             CommodityListVO vo = new CommodityListVO();
             vo.setId(commodity.getId());
-            String[] imagesArray = commodity.getImages().split("\\$");
-            vo.setImage(imagesArray[0]);
             vo.setPrice(commodity.getPrice());
             vo.setTitle(commodity.getTitle());
             vo.setLocation(commodity.getLocation());
@@ -135,15 +127,5 @@ public class CommodityController {
         String formattedDate0 = sdf0.format(new Date(updateTimeMillis));
         commodityInfoVO.setUpdateTime(formattedDate0);
         return new Response(1001, commodityInfoVO);
-    }
-
-    @RequestMapping(value = "/commodity/extract")
-    public Response extractCommodityById(@RequestParam Long id) {
-        try {
-           Commodity commodity =  commodityService.extractById(id);
-           return new Response(1001,commodity);
-        } catch (Exception e) {
-            return null;
-        }
     }
 }

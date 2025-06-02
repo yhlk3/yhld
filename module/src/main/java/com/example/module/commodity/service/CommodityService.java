@@ -155,5 +155,11 @@ public class CommodityService {
             return 1.0; // 默认值
         }
     }
+    //getByCategoryId
+    public List<Commodity> getCommoditiesByCategoryId(Long categoryId) {
+      List<Commodity> commodities = commodityMapper.getByCategoryId(categoryId);
+      return commodities;
+    }
+
 
 }

@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.apache.commons.codec.binary.Base64;
 
-
+import javax.annotation.PostConstruct;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -28,10 +28,29 @@ public class CommodityController {
     private CategoryService categoryService;
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
+    
+    // 敏感词Map
+    private static final Map<String, Boolean> sensitiveWordsMap = new HashMap<>();
+    
+    @PostConstruct
+    public void init() {
+        // 初始化敏感词Map
+        sensitiveWordsMap.put("敏感词1", true);
+        sensitiveWordsMap.put("敏感词2", true);
+    }
 
     @RequestMapping("/commodity/search")
     public Response search(@RequestParam(value = "keyword", required = false) String keyword,
                                         @RequestParam(value = "wp", required = false) String encodedWpString) {
+        // 敏感词过滤
+        if (keyword != null && !keyword.isEmpty()) {
+            for (String sensitiveWord : sensitiveWordsMap.keySet()) {
+                if (keyword.contains(sensitiveWord)) {
+                    return new Response(3058, "搜索关键词包含敏感词");
+                }
+            }
+        }
+        
         int pageSize = 5;
         CommodityWp wp = null;
         if (encodedWpString != null && !encodedWpString.isEmpty()) {
@@ -145,7 +164,7 @@ public class CommodityController {
     public Response info(@RequestParam Long id) {
         Commodity commodity =  commodityService.getById(id);
         if (commodity == null ) {
-            Response result = new Response(3054, null);
+            Response result = new Response(3054);
             return result;
         }
         Category category = categoryService.getById(commodity.getCategoryId());

@@ -47,8 +47,7 @@ public class HomeController {
         CompletableFuture<List<Banner>> bannerFuture = CompletableFuture.supplyAsync(() -> bannerService.getBanners());
         CompletableFuture<List<Event>> eventFuture = CompletableFuture.supplyAsync(() -> eventService.getEvents());
         CompletableFuture<List<Category>> categoryFuture = CompletableFuture.supplyAsync(() -> categoryService.getTopCategories());
-        CompletableFuture<List<Commodity>> commodityFuture = CompletableFuture.supplyAsync(() ->
-                commodityService.getCommoditiesByPage(1, 5));
+        CompletableFuture<List<Commodity>> commodityFuture = CompletableFuture.supplyAsync(() -> commodityService.getCommoditiesByPage(1, 5));
 
         // 等待所有任务完成
         CompletableFuture.allOf(bannerFuture, eventFuture, categoryFuture, commodityFuture).join();
